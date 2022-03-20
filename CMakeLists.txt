@@ -7,3 +7,6 @@ add_compile_options(-march=native)
 
 
 add_executable(${TARGET} main.cxx)
+
+
+add_executable(hard_one hard.cxx)
