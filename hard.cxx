@@ -11,7 +11,7 @@
 #include <chrono>
 #include <functional>
 #include <cassert>
-
+#include <memory.h>
 #include <array>
 #include <cmath>
 using std::chrono::high_resolution_clock;
@@ -68,7 +68,7 @@ int add_AVX(int size, float *first_array, float *second_array) {
 
 	__m128 difference = _mm_sub_ps(first_values, second_values);
 	__m128 power = _mm_mul_ps(difference, difference);
-	__m128 sqrt = _mm_sqrt_ss(power);
+	__m128 sqrt = _mm_sqrt_ps(power);
 
 	_mm_storer_ps(&first_array[i], sqrt);
   }
@@ -102,7 +102,7 @@ int main() {
 
   for (int i = 0; i < size; i++) {
 	first_array[i] = 0;
-	second_array[i] = i%10;
+	second_array[i] = i % 10;
   }
   std::function<void(void)> using_AWX = [size, &first_array, &second_array]() {
 	add_AVX(size, first_array, second_array);
@@ -113,25 +113,26 @@ int main() {
 	  first_array[i] = sqrt(pow(first_array[i] - second_array[i], 2));
 	}
   };
+
   std::cout << "SIMD...\t";
   auto awx_times = measure_time(using_AWX, 1000);
 
-  std::cout << "done\nValidation ... ";
-  for (int i = 0; i < 100; i++) {
-	std::cout << first_array[rand() % size] - second_array[rand() % size];
-  }
+  float *copy = new float[size];
+  memcpy_s(copy, size, first_array, size);
 
   for (int i = 0; i < size; i++) {
 	first_array[i] = 0;
-	second_array[i] = i%10;
+	second_array[i] = i % 10;
   }
 
   std::cout << "done\nSimple loop...\t";
   auto loop_times = measure_time(using_simple_loop, 1000);
 
-  std::cout << "done\nValidation ... ";
-  for (int i = 0; i < 100; i++) {
-	std::cout << first_array[rand() % size] - second_array[rand() % size];
+  for (int i = 0; i < size; i++) {
+	if (std::abs(copy[i] - first_array[i]) > 0.1) {
+	  std::cout << "Values are not the same: " << std::abs(copy[i] - first_array[i]) << "\t";
+	  exit(1);
+	}
   }
   std::cout << "ok\n";
 
@@ -139,3 +140,6 @@ int main() {
   std::cout << "Average time Using Simple Loop:\t" << Avg(loop_times) << " microseconds\n";
   return 0;
 }
+
+
+
