@@ -10,4 +10,4 @@
 
 [Virginia.edu](https://www.cs.virginia.edu/~cr4bd/3330/F2018/simdref.html) <- Practical examples 
 
-[SIMD](https://ftp.cvut.cz/kernel/people/geoff/cell/ps3-linux-docs/CellProgrammingTutorial/BasicsOfSIMDProgramming.html#:~:text=SIMD%20is%20short%20for%20Single,data%20is%20called%20scalar%20operations.) <- General Idea  
+[SIMD](http://ftp.cvut.cz/kernel/people/geoff/cell/ps3-linux-docs/CellProgrammingTutorial/BasicsOfSIMDProgramming.html#:~:text=SIMD%20is%20short%20for%20Single,data%20is%20called%20scalar%20operations.) <- General Idea  
